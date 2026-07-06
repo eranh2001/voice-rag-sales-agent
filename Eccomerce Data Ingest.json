@@ -1,0 +1,248 @@
+{
+  "name": "Eccomerce Data Ingest",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        16
+      ],
+      "id": "f092087a-ce84-4005-8dfd-d97c68a56f3f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "56652693-6c16-4c97-bcc2-bf9bcca28037",
+              "name": "content",
+              "value": "=Product name: {{ $json.Name }}\nCategory:{{ $json.Category }}\nSKU:{{ $json.SKU }}\nPrice: ${{$json.Price }}\nStock Quantity:{{ $json['Stock Quantity'] }}\nAvailability: {{ $json.Availability }}\nConnectivity: {{ $json.Connectivity }}\nBest For:{{ $json['Best For'] }}\nDescription: {{ $json.Description }}",
+              "type": "string"
+            },
+            {
+              "id": "7d007e57-5e53-421d-809f-ea2c117c5ff5",
+              "name": "category",
+              "value": "={{ $json.Category }}",
+              "type": "string"
+            },
+            {
+              "id": "5fc9e58b-7cb7-4dbc-a8a8-4b8b7ca33e6b",
+              "name": "price",
+              "value": "={{ $json.Price }}",
+              "type": "number"
+            },
+            {
+              "id": "9118eb02-f673-4003-a0b7-e7dc094e94d2",
+              "name": "availability",
+              "value": "={{ $json.Availability }}",
+              "type": "string"
+            },
+            {
+              "id": "ef664c0f-ff9d-4618-aaac-2c599acf75d4",
+              "name": "brand",
+              "value": "={{ $json.Brand }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        16
+      ],
+      "id": "a434b727-1218-4cc4-95b7-2df545310b51",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "knowledgebase",
+          "mode": "list",
+          "cachedResultName": "knowledgebase"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        16
+      ],
+      "id": "6c65f39d-f65c-4591-b959-0d80c0798508",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "1egaqyCoSuOIEZUZ",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        656,
+        240
+      ],
+      "id": "f26da28d-151d-4023-83d5-d5cd088e1b2f",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "YwSuiNOptlBtmpMQ",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $('Edit Fields').item.json.content }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "category",
+                "value": "={{ $json.category }}"
+              },
+              {
+                "name": "price",
+                "value": "={{ $json.price }}"
+              },
+              {
+                "name": "availability",
+                "value": "={{ $json.availability }}"
+              },
+              {
+                "name": "brand",
+                "value": "={{ $json.brand }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        240
+      ],
+      "id": "bd6da562-ada1-4dcc-98d7-596af1029c6f",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Yt7h_fOUUWd5QLliKI2tGAQPqEe8xRe8vlOB8m6QG8w",
+          "mode": "list",
+          "cachedResultName": "Products-Enriched",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yt7h_fOUUWd5QLliKI2tGAQPqEe8xRe8vlOB8m6QG8w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1878438159,
+          "mode": "list",
+          "cachedResultName": "Products",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yt7h_fOUUWd5QLliKI2tGAQPqEe8xRe8vlOB8m6QG8w/edit#gid=1878438159"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        16
+      ],
+      "id": "b492c800-33f0-4c00-ac61-77afd4695d0d",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "g0svfFvPMUPPNlMd",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "30722f1a-e108-4e87-98b2-8199b8256169",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b841f95498d3b48a5fcd832e4e741fe811275e87c53b729b900a5ec88b629438"
+  },
+  "nodeGroups": [],
+  "id": "MV6VOk9HchsfzoYk",
+  "tags": []
+}
