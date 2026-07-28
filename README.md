@@ -44,7 +44,7 @@ Before the agent can answer anything, the product catalog has to be turned into 
 
 The catalog lives in a spreadsheet, because a spreadsheet is easy for a human to read and edit. But a spreadsheet cannot be searched by meaning, only by exact text. So this workflow reads every product from the sheet, builds a clean descriptive text block for each one, and hands it to the vector store.
 
-**Why Supabase.** The products are stored in Supabase, a database with vector support. Storing each product as a vector, which is a numerical representation of its meaning, is what allows the agent to later search by intent rather than exact keywords. When a customer asks for something quiet for an office, the search can find the right products even though the word quiet may appear nowhere in a product's name.
+**Why Supabase.** The products are stored in Supabase, a database with vector support. Storing each product as a vector, is what allows the agent to later search by intent rather than exact keywords. When a customer asks for something quiet for an office, the search can find the right products even though the word quiet may appear nowhere in a product's name.
 
 **What the Default Data Loader does with the metadata.** Each product is split into two parts on the way in. The descriptive text, the part a customer would care about, is embedded so it can be found by semantic search. The structured fields, such as category, price, and availability, are stored alongside as metadata. The descriptive text answers "which product fits this need." The metadata carries the exact facts the agent then quotes back. Descriptive text for finding, structured fields for stating.
 
